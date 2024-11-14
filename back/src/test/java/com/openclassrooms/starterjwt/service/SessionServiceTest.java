@@ -288,24 +288,6 @@ public class SessionServiceTest {
     public void session_noLongerParticipate_ShouldBadRequestException_WhenUserNotAlreadyParticipate() {
         // GIVEN
         Long sessionId = 1L;
-        Long userId = 1L;
-
-        Session session = new Session();
-        session.setId(sessionId);
-        session.setUsers(new ArrayList<>());
-
-        // Simuler une session où aucun utilisateur ne participe
-        given(sessionRepository.findById(sessionId)).willReturn(Optional.of(session));
-
-        // WHEN & THEN : Vérifier que BadRequestException est lancée
-        assertThatThrownBy(() -> classUnderTest.noLongerParticipate(sessionId, userId))
-                .isInstanceOf(BadRequestException.class);
-    }
-
-    @Test
-    public void session_noLongerParticipate_ShouldDoNothing_WhenUserDoesNotExistInUsers() {
-        // GIVEN
-        Long sessionId = 1L;
         Long userId = 2L; // Utilisateur non présent dans la session
 
         // Création d'une session avec un utilisateur différent
@@ -316,13 +298,11 @@ public class SessionServiceTest {
         session.setId(sessionId);
         session.setUsers(List.of(user)); // La session contient un autre utilisateur
 
-        // Simuler la récupération de la session
+        // Simuler une session où l'utilisateur attendu (qui doit être supprimé de la liste) ne participe pas
         given(sessionRepository.findById(sessionId)).willReturn(Optional.of(session));
 
-        // WHEN : Appeler la méthode noLongerParticipate du service
-        classUnderTest.noLongerParticipate(sessionId, userId);
-
-        // THEN : Vérifier que la liste des utilisateurs n'a pas été modifiée
-        assertThat(session.getUsers()).containsExactly(user);
+        // WHEN & THEN : Vérifier que BadRequestException est lancée
+        assertThatThrownBy(() -> classUnderTest.noLongerParticipate(sessionId, userId))
+                .isInstanceOf(BadRequestException.class);
     }
 }
