@@ -11,14 +11,17 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
+@ActiveProfiles("test")
 public class TeacherControllerIT {
 
     @Autowired
@@ -33,9 +36,9 @@ public class TeacherControllerIT {
     private String jwtToken;
 
     @BeforeEach
-    void setUp(){
+    void setUp() {
         // Générer un jwt token
-        UserDetails userDetails = userDetailsService.loadUserByUsername("okok@example.com");
+        UserDetails userDetails = userDetailsService.loadUserByUsername("yoga@studio.com");
 
         Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 

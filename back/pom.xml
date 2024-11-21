@@ -170,6 +170,10 @@
 						<configuration>
 							<destFile>${project.build.directory}/jacoco-output/jacoco-unit-tests.exec</destFile>
 							<propertyName>surefire.jacoco.args</propertyName>
+								<excludes>
+									<exclude>com/openclassrooms/starterjwt/dto/**</exclude>
+									<exclude>com/openclassrooms/starterjwt/payload/**</exclude>
+								</excludes>
 						</configuration>
 					</execution>
 					<execution>
@@ -181,6 +185,10 @@
 					<configuration>
 						<dataFile>${project.build.directory}/jacoco-output/jacoco-unit-tests.exec</dataFile>
 						<outputDirectory>${project.build.directory}/jacoco-unit-test-coverage-report</outputDirectory>
+						<excludes>
+							<exclude>com/openclassrooms/starterjwt/dto/**</exclude>
+							<exclude>com/openclassrooms/starterjwt/payload/**</exclude>
+						</excludes>
 					</configuration>
 				</execution>
 					<execution>
@@ -192,6 +200,10 @@
 						<configuration>
 							<destFile>${project.build.directory}/jacoco-output/jacoco-integration-tests.exec</destFile>
 							<propertyName>failsafe.jacoco.args</propertyName>
+							<excludes>
+								<exclude>com/openclassrooms/starterjwt/dto/**</exclude>
+								<exclude>com/openclassrooms/starterjwt/payload/**</exclude>
+							</excludes>
 						</configuration>
 					</execution>
 					<execution>
@@ -203,6 +215,10 @@
 						<configuration>
 							<dataFile>${project.build.directory}/jacoco-output/jacoco-integration-tests.exec</dataFile>
 							<outputDirectory>${project.build.directory}/jacoco-integration-test-coverage-report</outputDirectory>
+							<excludes>
+								<exclude>com/openclassrooms/starterjwt/dto/**</exclude>
+								<exclude>com/openclassrooms/starterjwt/payload/**</exclude>
+							</excludes>
 						</configuration>
 					</execution>
 					<execution>
@@ -232,6 +248,10 @@
 						<configuration>
 							<dataFile>${project.build.directory}/jacoco-output/merged.exec</dataFile>
 							<outputDirectory>${project.build.directory}/jacoco-merged-test-coverage-report</outputDirectory>
+							<excludes>
+								<exclude>com/openclassrooms/starterjwt/dto/**</exclude>
+								<exclude>com/openclassrooms/starterjwt/payload/**</exclude>
+							</excludes>
 						</configuration>
 					</execution>
 					<execution>
@@ -248,6 +268,7 @@
 										<exclude>*Test</exclude>
 										<exclude>*IT</exclude>
 										<exclude>com/openclassrooms/starterjwt/dto/**</exclude>
+										<exclude>com/openclassrooms/starterjwt/payload/**</exclude>
 									</excludes>
 									<limits>
 										<limit>
