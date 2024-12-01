@@ -1,0 +1,9 @@
+{
+  "adminUser": {
+    "id": 1,
+    "username": "userName",
+    "firstName": "firstName",
+    "lastName": "lastName",
+    "admin": true
+  }
+}

@@ -1,22 +1,50 @@
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { expect } from '@jest/globals';
+import { Teacher } from '../interfaces/teacher.interface';
 
 import { TeacherService } from './teacher.service';
 
 describe('TeacherService', () => {
   let service: TeacherService;
+  let httpMock: HttpTestingController;
+  let pathService: 'api/teacher/';
+  let id: '1';
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports:[
-        HttpClientModule
+        HttpClientTestingModule
       ]
     });
     service = TestBed.inject(TeacherService);
+    httpMock = TestBed.inject(HttpTestingController);
   });
 
-  it('should be created', () => {
+  test('should be created', () => {
     expect(service).toBeTruthy();
+  });
+
+  test('doit retourner un professeur par son id', (done) => {
+    const mockTeacher: Teacher = {
+          id: 1,
+          lastName: 'Dixon',
+          firstName: 'Daryl',
+          createdAt: new Date(),
+          updatedAt: new Date()
+        };
+
+        // Appel du service
+        service.detail('1').subscribe((teacher) => {
+          expect(teacher).toEqual(mockTeacher); // Vérifie que la réponse est correcte
+          done();
+        });
+
+        // Vérifie l'URL et la méthode de la requête
+        const req = httpMock.expectOne(pathService + id);
+        expect(req.request.method).toBe('GET');
+
+        // Simule une réponse HTTP avec les données
+        req.flush(mockTeacher);
   });
 });
