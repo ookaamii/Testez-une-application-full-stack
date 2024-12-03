@@ -53,6 +53,8 @@ public class SessionControllerIT {
 
     private String jwtToken;
 
+    private SessionDto testSessionDto;
+
     @BeforeEach
     void setUp() {
         // Générer un jwt token
@@ -61,6 +63,13 @@ public class SessionControllerIT {
         Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
         jwtToken = jwtUtils.generateJwtToken(authentication);
+
+        // On iniatialise ici les sessions
+        testSessionDto = new SessionDto();
+        testSessionDto.setName("Pilate modif");
+        testSessionDto.setDescription("Cours de 1h de pilate");
+        testSessionDto.setDate(new Date());
+        testSessionDto.setTeacher_id(2L);
     }
 
     @Test
@@ -122,13 +131,6 @@ public class SessionControllerIT {
 
     @Test
     public void session_update_ShouldReturnSession_WhenSessionExist() throws Exception {
-        // Initialiser une session modifiée
-        SessionDto testSessionDto = new SessionDto();
-        testSessionDto.setName("Pilate modif");
-        testSessionDto.setDescription("Cours de 1h de pilate");
-        testSessionDto.setDate(new Date());
-        testSessionDto.setTeacher_id(2L);
-
         // Convertir les données en JSON
         String sessionDtoJson = new ObjectMapper().writeValueAsString(testSessionDto);
 
@@ -145,13 +147,6 @@ public class SessionControllerIT {
 
     @Test
     public void session_update_ShouldReturnBadRequest_WhenNumberFormatException() throws Exception {
-        // Initialiser une session modifiée
-        SessionDto testSessionDto = new SessionDto();
-        testSessionDto.setName("Pilate modif");
-        testSessionDto.setDescription("Cours de 1h de pilate");
-        testSessionDto.setDate(new Date());
-        testSessionDto.setTeacher_id(2L);
-
         // Convertir les données en JSON
         String sessionDtoJson = new ObjectMapper().writeValueAsString(testSessionDto);
 
