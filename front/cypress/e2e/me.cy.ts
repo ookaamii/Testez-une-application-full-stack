@@ -13,7 +13,7 @@ describe('Me spec', () => {
         }).as('getUser');
       });
 
-      // Navigation vers la page de login et connexion
+      // Navigation vers la page de login
       cy.visit('/login');
       cy.get('input[formControlName=email]').type('daryl@mail.com');
       cy.get('input[formControlName=password]').type('test!1234');
@@ -21,14 +21,14 @@ describe('Me spec', () => {
     });
   });
 
-  it('Should display profile user and navigate back when clicking arrow back button', () => {
+  it('should display the user profile and navigate back when clicking the back arrow button', () => {
     // Accéder à la page profil
     cy.get('span[routerLink="me"]').should('be.visible').click();
 
     // Vérifier que l'URL contient "/me"
     cy.url().should('include', '/me');
 
-    // Attendre la réponse du backend pour le profil utilisateur
+    // Attendre le chargement des données utilisateur
     cy.wait('@getUser');
 
     // Vérifier les informations du profil affiché
@@ -50,44 +50,44 @@ describe('Me spec', () => {
     cy.get('@historyBack').should('have.been.calledOnce');
   });
 
-  it('Should delete user account', () => {
+  it('should delete the user account', () => {
     // Accéder à la page profil
-        cy.get('span[routerLink="me"]').should('be.visible').click();
+    cy.get('span[routerLink="me"]').should('be.visible').click();
 
-        // Vérifier que l'URL contient "/me"
-        cy.url().should('include', '/me');
+    // Vérifier que l'URL contient "/me"
+    cy.url().should('include', '/me');
 
-        // Attendre la réponse du backend pour le profil utilisateur
-        cy.wait('@getUser');
+    // Attendre le chargement des données utilisateur
+    cy.wait('@getUser');
 
-        // Vérifier les informations du profil affiché
-        cy.get('mat-card-content').within(() => {
-          cy.contains('Daryl DIXON').should('be.visible');
-        });
+    // Vérifier les informations du profil affiché
+    cy.get('mat-card-content').within(() => {
+      cy.contains('Daryl DIXON').should('be.visible');
+    });
 
-      // Interception de la requête DELETE pour la suppression
-          cy.intercept('DELETE', '/api/user/2', {
-            statusCode: 200, // Simule une suppression réussie
-          }).as('deleteRequest');
+    // Interception de la requête DELETE pour la suppression
+    cy.intercept('DELETE', '/api/user/2', {
+      statusCode: 200, // Simule une suppression réussie
+    }).as('deleteRequest');
 
-          // Cliquer sur le bouton de suppression
-          cy.get('button.mat-raised-button')
-            .contains('Detail')
-            .should('be.visible')
-            .click();
+    // Cliquer sur le bouton de suppression
+    cy.get('button.mat-raised-button')
+      .contains('Detail')
+      .should('be.visible')
+      .click();
 
-          // Vérifier que la requête DELETE a été envoyée
-          cy.wait('@deleteRequest').its('response.statusCode').should('eq', 200);
+    // Vérifier que la requête DELETE a été envoyée
+    cy.wait('@deleteRequest').its('response.statusCode').should('eq', 200);
 
-          // Vérifier que le snackbar de succès s'affiche
-          cy.get('.mat-snack-bar-container')
-            .should('be.visible')
-            .and('contain', 'Your account has been deleted !');
+    // Vérifier que le snackbar de succès s'affiche
+    cy.get('.mat-snack-bar-container')
+      .should('be.visible')
+      .and('contain', 'Your account has been deleted!');
 
     // Vérification : Redirection vers la page d'accueil
     cy.url().should('include', '/');
 
-      // Vérifier que l'option de connexion est disponible
-      cy.get('span[routerLink="login"]').should('be.visible');
+    // Vérifier que l'option de connexion soit de nouveau disponible
+    cy.get('span[routerLink="login"]').should('be.visible');
   });
 });
