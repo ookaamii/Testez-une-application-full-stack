@@ -1,27 +1,48 @@
 describe('Login spec', () => {
-  it('Login successfull', () => {
-    cy.visit('/login')
+  beforeEach(() => {
+    cy.visit('/login');
+  });
 
+  it('should log in successfully', () => {
+    cy.fixture('users.json').then((users) => {
+      // Intercepter la requête POST avec les données du fichier JSON
+      cy.intercept('POST', '/api/auth/login', {
+        body: users.adminUser, // Utiliser les données depuis users.json
+      }).as('loginRequest');
+
+      cy.intercept(
+        {
+          method: 'GET',
+          url: '/api/session',
+        },
+        []
+      ).as('session');
+
+      cy.get('input[formControlName=email]').type("yoga@studio.com");
+      cy.get('input[formControlName=password]').type(`${"test!1234"}`);
+      cy.get('button[type="submit"]').click();
+
+      // Vérifier que la connexion est réussie
+      cy.wait('@loginRequest');
+
+      // Vérifier que l'URL contient "/sessions"
+      cy.url().should('include', '/sessions');
+    });
+  });
+
+  it('should fail to log in and display an error message', () => {
+    // Intercepter la requête POST pour simuler une erreur
     cy.intercept('POST', '/api/auth/login', {
-      body: {
-        id: 1,
-        username: 'userName',
-        firstName: 'firstName',
-        lastName: 'lastName',
-        admin: true
-      },
-    })
+      statusCode: 400,
+    });
 
-    cy.intercept(
-      {
-        method: 'GET',
-        url: '/api/session',
-      },
-      []).as('session')
+    cy.get('input[formControlName=email]').type("yoga@studio.com");
+    cy.get('input[formControlName=password]').type(`${"t"}`);
+    cy.get('button[type="submit"]').click();
 
-    cy.get('input[formControlName=email]').type("yoga@studio.com")
-    cy.get('input[formControlName=password]').type(`${"test!1234"}{enter}{enter}`)
-
-    cy.url().should('include', '/sessions')
-  })
+    // Vérifier que le message d'erreur est visible et contient le texte attendu
+    cy.get('.error')
+      .should('be.visible')
+      .and('contain', 'An error occurred');
+  });
 });

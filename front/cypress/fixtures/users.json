@@ -1,0 +1,22 @@
+{
+  "adminUser": {
+    "id": 1,
+    "email": "yoga@studio.com",
+    "firstName": "Admin",
+    "lastName": "Admin",
+    "password": "test!1234",
+    "admin": true,
+    "createdAt": "2024-09-02",
+    "updatedAt": "2024-09-02"
+  },
+  "randomUser": {
+    "id": 2,
+    "email": "daryl@mail.com",
+    "firstName": "Daryl",
+    "lastName": "Dixon",
+    "password": "test!1234",
+    "admin": false,
+    "createdAt": "2024-09-02",
+    "updatedAt": "2024-09-02"
+  }
+}
