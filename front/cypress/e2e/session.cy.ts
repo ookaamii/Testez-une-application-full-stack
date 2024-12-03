@@ -1,19 +1,10 @@
 describe('Session spec', () => {
   beforeEach(() => {
     cy.fixture('users.json').then((users) => {
-      // Intercepter la requête POST avec les données du fichier JSON
+      // Intercepte la requête POST pour le login
       cy.intercept('POST', '/api/auth/login', {
-        body: users.adminUser, // Utiliser les données depuis users.json
+        body: users.adminUser, // Utilise les données du fichier JSON
       });
-
-      // Interception des sessions vides
-      cy.intercept(
-        {
-          method: 'GET',
-          url: '/api/session',
-        },
-        []
-      ).as('session');
 
       // Interception des enseignants
       cy.fixture('teachers.json').then((teachers) => {
@@ -29,14 +20,14 @@ describe('Session spec', () => {
         }).as('getSessions');
       });
 
-      // Interception de la 1ère session
+      // Interception de la première session
       cy.fixture('sessions.json').then((sessions) => {
         cy.intercept('GET', '/api/session/1', {
           body: sessions[0], // Utilise les données du fichier JSON
         }).as('getSession');
       });
 
-      // Interception du 2ème enseignant
+      // Interception du deuxième enseignant
       cy.fixture('teachers.json').then((teachers) => {
         cy.intercept('GET', '/api/teacher/2', {
           body: teachers[1], // Utilise les données du fichier JSON
@@ -45,22 +36,17 @@ describe('Session spec', () => {
 
       // Navigation vers la page de login et connexion
       cy.visit('/login');
-
       cy.get('input[formControlName=email]').type('yoga@studio.com');
       cy.get('input[formControlName=password]').type('test!1234');
-
       cy.get('button[type="submit"]').click(); // Soumettre le formulaire
     });
   });
 
-  it('Should successfully create a session', () => {
-    // Vérifie que le bouton "Create" est visible et clique dessus
+  it('Should allow an admin user to create a session', () => {
     cy.get('button[routerLink="create"]').should('be.visible').click();
-
-    // Vérifie l'accès à la page de création de session
     cy.url().should('include', '/sessions/create');
+    cy.get('h1').should('contain', 'Create session');
 
-    // Interception pour la création d'une session
     cy.intercept('POST', '/api/session', {
       body: {
         id: 2,
@@ -74,70 +60,95 @@ describe('Session spec', () => {
       },
     }).as('createSession');
 
-    // Remplir le formulaire
     cy.get('input[formControlName=name]').type('session 2');
     cy.get('textarea[formControlName=description]').type('my description');
-
-    // Sélectionner un enseignant dans le champ mat-select
-    cy.get('mat-select[formControlName="teacher_id"]').click(); // Ouvre le menu
-    cy.get('mat-option').contains('Margot DELAHAYE').click(); // Sélectionne l'enseignant
-
-    // Sélectionner la date
+    cy.get('mat-select[formControlName="teacher_id"]').click();
+    cy.get('mat-option').contains('Margot DELAHAYE').click();
     cy.get('input[formControlName=date]').type('2025-01-01');
-
-    // Soumettre le formulaire
     cy.get('button[type="submit"]').click();
 
-    // Vérifie que la requête POST a été exécutée
     cy.wait('@createSession').then((interception) => {
       expect(interception.response.statusCode).to.eq(200);
     });
 
-    // Vérifie que la snack-bar s'affiche avec le bon message
     cy.get('simple-snack-bar .mat-simple-snack-bar-content')
       .should('be.visible')
       .and('contain', 'Session created !');
-
-    // Vérifie la redirection après soumission
     cy.url().should('include', '/sessions');
   });
 
-  it('Should show detail of a session', () => {
+  it('Should display session details', () => {
     cy.url().should('include', '/sessions');
-
-    // Attendre que la liste des sessions soit chargée
     cy.wait('@getSessions');
 
-    // Trouve la première carte et clique sur "Detail"
     cy.get('mat-card').first().within(() => {
       cy.contains('button', 'Detail').click();
     });
 
-    // Vérifie l'accès à la page de détail de la session
     cy.url().should('include', '/sessions/detail/1');
-
-    // Attendre que les données de la session et du professeur soient chargées
     cy.wait('@getSession').then((sessionInterception) => {
       cy.wait('@getTeacher').then((interception) => {
-        const teacher = interception.response.body; // Récupère les données du professeur
-        const session = sessionInterception.response.body; // Récupère les données de la session
+        const teacher = interception.response.body;
+        const session = sessionInterception.response.body;
 
-        // Vérifie que la description est correcte
         cy.get('.description').should('contain', 'my description');
-
-        // Vérifie que le sous-titre contient "HÉLÈNE THIERCELIN"
         cy.get('mat-card-subtitle').within(() => {
-          cy.contains(`${teacher.firstName} ${teacher.lastName.toUpperCase()}`).should('be.visible');
+          cy.contains(`${teacher.firstName} ${teacher.lastName.toUpperCase()}`)
+            .should('be.visible');
         });
-
-        // Vérifie que le nombre d'attendees est correct
         cy.get('.ml1').should('contain', `${session.users.length}`);
-
-        // Vérifie que le bouton delete s'affiche quand l'user est admin
         cy.get('mat-icon').within(() => {
           cy.contains('delete').should('be.visible');
         });
       });
     });
+  });
+
+  it('Should allow an admin user to delete a session', () => {
+    cy.url().should('include', '/sessions');
+    cy.wait('@getSessions');
+
+    cy.get('mat-card').first().within(() => {
+      cy.contains('button', 'Detail').click();
+    });
+
+    cy.url().should('include', '/sessions/detail/1');
+    cy.wait('@getSession');
+    cy.wait('@getTeacher');
+
+    cy.intercept('DELETE', '/api/session/1', { statusCode: 200 }).as(
+      'deleteSession'
+    );
+
+    cy.get('mat-icon').contains('delete').click();
+    cy.wait('@deleteSession').then((interception) => {
+      expect(interception.response.statusCode).to.eq(200);
+    });
+
+    cy.get('simple-snack-bar .mat-simple-snack-bar-content')
+      .should('be.visible')
+      .and('contain', 'Session deleted !');
+    cy.url().should('include', '/sessions');
+  });
+
+  it('Should not show delete and edit buttons for non-admin users', () => {
+    cy.fixture('users.json').then((users) => {
+      cy.intercept('POST', '/api/auth/login', {
+        body: users.randomUser,
+      });
+      cy.visit('/login');
+      cy.get('input[formControlName=email]').type('daryl@mail.com');
+      cy.get('input[formControlName=password]').type('test!1234');
+      cy.get('button[type="submit"]').click();
+    });
+
+    cy.url().should('include', '/sessions');
+    cy.wait('@getSessions');
+
+    cy.get('mat-card').first().within(() => {
+      cy.contains('button', 'Edit').should('not.exist');
+    });
+
+    cy.get('button[routerLink="create"]').should('not.exist');
   });
 });

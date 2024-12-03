@@ -3,22 +3,22 @@ describe('Register spec', () => {
     cy.visit('/register');
   });
 
-  it('Register successfull', () => {
+  it('should successfully register the user', () => {
     cy.intercept('POST', '/api/auth/register', {
       body: {
         message: 'User registered successfully!'
       },
-    })
+    });
 
-    cy.get('input[formControlName=email]').type("toto@toto.com")
-    cy.get('input[formControlName=firstName]').type("toto")
-    cy.get('input[formControlName=lastName]').type("toto")
-    cy.get('input[formControlName=password]').type(`${"test!1234"}{enter}{enter}`)
+    cy.get('input[formControlName=email]').type("toto@toto.com");
+    cy.get('input[formControlName=firstName]').type("toto");
+    cy.get('input[formControlName=lastName]').type("toto");
+    cy.get('input[formControlName=password]').type(`${"test!1234"}{enter}{enter}`);
 
-    cy.url().should('include', '/login')
+    cy.url().should('include', '/login');
   });
 
-  it('Disable the Submit button when form is invalid', () => {
+  it('should disable the Submit button when the form is invalid', () => {
     // Remplir un formulaire invalide
     cy.get('input[formControlName=email]').type("v");
     cy.get('input[formControlName=firstName]').type("toto");
@@ -29,7 +29,7 @@ describe('Register spec', () => {
     cy.get('button[type="submit"]').should('be.disabled');
   });
 
-  it('Show an error message on failed registration', () => {
+  it('should display an error message on failed registration', () => {
     cy.visit('/register');
 
     cy.intercept('POST', '/api/auth/register', {
