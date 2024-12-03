@@ -2,7 +2,7 @@
 
 ![yoga](https://user.oc-static.com/upload/2022/10/25/16667162692336_P5_banner-numdev.png)
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 14.1.0.
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 14.1.0 and Java version 11.
 
 # Start the project
 
