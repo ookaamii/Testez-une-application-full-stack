@@ -35,24 +35,31 @@ public class SessionServiceTest {
     @InjectMocks
     private SessionService classUnderTest;
 
+    private Session session1;
+    private Session session2;
 
     @BeforeEach
     public void setup() {
         // Ici, Mockito injectera automatiquement les mocks dans classUnderTest, grâce à InjectMocks.
+
+        // Initialiser les infos ici pour ne pas les répéter dans les tests
+        session1 = new Session();
+        session1.setName("Pilate");
+        session1.setDescription("Super cours de pilate");
+
+        session2 = new Session();
+        session2.setName("Yoga débutant");
+        session2.setDescription("Cours de yoga pour débutants");
     }
 
     @Test
     public void session_create_ShouldSaveSession() {
-        // GIVEN : Initialiser les objets nécessaires au test
-        Session session = new Session();
-        session.setName("Pilate");
-        session.setDescription("Super cours de pilate");
-
+        // GIVEN :
         // Pour un save, on peut mettre any pour une instance générique, sans session précise
-        given(sessionRepository.save(any(Session.class))).willReturn(session);
+        given(sessionRepository.save(any(Session.class))).willReturn(session1);
 
         // WHEN : Appeler la méthode create du service
-        Session createdSession = classUnderTest.create(session);
+        Session createdSession = classUnderTest.create(session1);
 
         // THEN : Vérifier les résultats
         assertThat(createdSession).isNotNull();
@@ -60,7 +67,7 @@ public class SessionServiceTest {
         assertThat(createdSession.getDescription()).isEqualTo("Super cours de pilate");
 
         // Vérifier que la méthode save a été appelée une fois avec la bonne instance de session
-        verify(sessionRepository).save(session);
+        verify(sessionRepository).save(session1);
     }
 
     @Test
@@ -78,14 +85,6 @@ public class SessionServiceTest {
     @Test
     public void session_findAll_ShouldReturnListSessions_WhenSessionsExist() {
         // GIVEN : Préparer une liste de sessions simulée
-        Session session1 = new Session();
-        session1.setName("Pilate");
-        session1.setDescription("Super cours de pilate");
-
-        Session session2 = new Session();
-        session2.setName("Yoga débutant");
-        session2.setDescription("Cours de yoga pour débutants");
-
         List<Session> expectedSessions = Arrays.asList(session1, session2);
         given(sessionRepository.findAll()).willReturn(expectedSessions);
 
@@ -103,13 +102,11 @@ public class SessionServiceTest {
     public void session_getById_ShouldReturnSession_WhenSessionExists() {
         // GIVEN : Initialiser une session
         Long sessionId = 1L;
-        Session expectedSession = new Session();
-        expectedSession.setId(sessionId);
-        expectedSession.setName("Pilate");
-        expectedSession.setDescription("Super cours de pilate");
+
+        session1.setId(sessionId);
 
         // Simuler un appel à findById avec un id spécifique. Et retourner un Optional<Session> contenant une session précise
-        given(sessionRepository.findById(sessionId)).willReturn(Optional.of(expectedSession));
+        given(sessionRepository.findById(sessionId)).willReturn(Optional.of(session1));
 
         // WHEN : Appeler la méthode getById du service
         Session actualSession = classUnderTest.getById(sessionId);
@@ -168,11 +165,8 @@ public class SessionServiceTest {
         Long sessionId = 1L;
         Long userId = 1L;
 
-        Session session = new Session();
-        session.setId(sessionId);
-        session.setName("Pilate");
-        session.setDescription("Super cours de pilate");
-        session.setUsers(new ArrayList<>());
+        session1.setId(sessionId);
+        session1.setUsers(new ArrayList<>());
 
         User user = new User();
         user.setId(userId);
@@ -180,18 +174,18 @@ public class SessionServiceTest {
         user.setLastName("Dixon");
 
         // Simuler la récupération de la session et de l'utilisateur
-        given(sessionRepository.findById(sessionId)).willReturn(Optional.of(session));
+        given(sessionRepository.findById(sessionId)).willReturn(Optional.of(session1));
         given(userRepository.findById(userId)).willReturn(Optional.of(user));
 
         // Simuler le comportement de save pour la session mise à jour
-        given(sessionRepository.save(session)).willReturn(session);
+        given(sessionRepository.save(session1)).willReturn(session1);
 
         // WHEN : Appeler la méthode participate du service
         classUnderTest.participate(sessionId, userId);
 
         // THEN : Vérifier que l'utilisateur a été ajouté à la session et que save a été appelé
-        assertThat(session.getUsers()).contains(user);
-        verify(sessionRepository).save(session);
+        assertThat(session1.getUsers()).contains(user);
+        verify(sessionRepository).save(session1);
     }
 
     @Test
@@ -233,12 +227,11 @@ public class SessionServiceTest {
         User user = new User();
         user.setId(userId);
 
-        Session session = new Session();
-        session.setId(sessionId);
-        session.setUsers(List.of(user));
+        session1.setId(sessionId);
+        session1.setUsers(List.of(user));
 
         // Simuler la récupération de la session et de l'utilisateur
-        given(sessionRepository.findById(sessionId)).willReturn(Optional.of(session));
+        given(sessionRepository.findById(sessionId)).willReturn(Optional.of(session1));
         given(userRepository.findById(userId)).willReturn(Optional.of(user));
 
         // WHEN & THEN : Vérifier que BadRequestException est lancée
@@ -255,19 +248,18 @@ public class SessionServiceTest {
         User user = new User();
         user.setId(userId);
 
-        Session session = new Session();
-        session.setId(sessionId);
-        session.setUsers(List.of(user));
+        session1.setId(sessionId);
+        session1.setUsers(List.of(user));
 
         // Simuler la récupération de la session et de l'utilisateur
-        given(sessionRepository.findById(sessionId)).willReturn(Optional.of(session));
+        given(sessionRepository.findById(sessionId)).willReturn(Optional.of(session1));
 
         // WHEN : Appeler la méthode noLongerParticipate du service
         classUnderTest.noLongerParticipate(sessionId, userId);
 
         // THEN : Vérifier que l'utilisateur a été supprimé de la session et que save a été appelé
-        assertThat(session.getUsers()).doesNotContain(user);
-        verify(sessionRepository).save(session);
+        assertThat(session1.getUsers()).doesNotContain(user);
+        verify(sessionRepository).save(session1);
     }
 
     @Test
@@ -294,12 +286,11 @@ public class SessionServiceTest {
         User user = new User();
         user.setId(1L); // ID différent de userId
 
-        Session session = new Session();
-        session.setId(sessionId);
-        session.setUsers(List.of(user)); // La session contient un autre utilisateur
+        session1.setId(sessionId);
+        session1.setUsers(List.of(user)); // La session contient un autre utilisateur
 
         // Simuler une session où l'utilisateur attendu (qui doit être supprimé de la liste) ne participe pas
-        given(sessionRepository.findById(sessionId)).willReturn(Optional.of(session));
+        given(sessionRepository.findById(sessionId)).willReturn(Optional.of(session1));
 
         // WHEN & THEN : Vérifier que BadRequestException est lancée
         assertThatThrownBy(() -> classUnderTest.noLongerParticipate(sessionId, userId))

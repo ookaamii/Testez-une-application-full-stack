@@ -27,22 +27,26 @@ public class TeacherServiceTest {
     @InjectMocks
     private TeacherService classUnderTest;
 
+    private Teacher teacher1;
+    private Teacher teacher2;
+
     @BeforeEach
     public void setup() {
         // Ici, Mockito injectera automatiquement les mocks dans classUnderTest, grâce à InjectMocks.
+
+        // Initialiser les infos ici pour ne pas les répéter dans les tests
+        teacher1 = new Teacher();
+        teacher1.setLastName("Dixon");
+        teacher1.setFirstName("Daryl");
+
+        teacher2 = new Teacher();
+        teacher2.setLastName("Grims");
+        teacher2.setFirstName("Rick");
     }
 
     @Test
     public void teacher_findAll_ShouldReturnListTeachers_WhenTeachersExist() {
         // GIVEN : Initialiser une liste de professeurs
-        Teacher teacher1 = new Teacher();
-        teacher1.setLastName("Dixon");
-        teacher1.setFirstName("Daryl");
-
-        Teacher teacher2 = new Teacher();
-        teacher2.setLastName("Grims");
-        teacher2.setFirstName("Rick");
-
         List<Teacher> expectedTeachers = Arrays.asList(teacher1, teacher2);
         given(teacherRepository.findAll()).willReturn(expectedTeachers);
 
@@ -60,13 +64,10 @@ public class TeacherServiceTest {
     public void teacher_findById_ShouldReturnTeacher_WhenTeacherExist() {
         // GIVEN : Initialiser un professeur
         Long teacherId = 1L;
-        Teacher expectedTeacher = new Teacher();
-        expectedTeacher.setId(teacherId);
-        expectedTeacher.setLastName("Dixon");
-        expectedTeacher.setFirstName("Daryl");
+        teacher1.setId(teacherId);
 
         // Simuler un appel à findById avec un id spécifique. Et retourner un Optional<Teacher> contenant un professeur précis
-        given(teacherRepository.findById(teacherId)).willReturn(Optional.of(expectedTeacher));
+        given(teacherRepository.findById(teacherId)).willReturn(Optional.of(teacher1));
 
         // WHEN : Appeler la méthode findById du service
         Teacher actualTeacher = classUnderTest.findById(teacherId);
