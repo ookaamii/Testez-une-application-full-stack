@@ -52,7 +52,7 @@ class UserControllerIT {
     }
 
     @Test
-    void user_findById_ShouldReturnUserWhenUserExist() throws Exception {
+    void user_findById_ShouldReturnUser_WhenUserExist() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/user/{id}", "1")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -61,42 +61,42 @@ class UserControllerIT {
     }
 
     @Test
-    void user_findById_ShouldReturnNotFoundWhenUserNotExist() throws Exception {
+    void user_findById_ShouldReturnNotFound_WhenUserNotExist() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/user/{id}", "3")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
     @Test
-    void user_findById_ShouldReturnBadRequestWhenNumberFormatException() throws Exception {
+    void user_findById_ShouldReturnBadRequest_WhenNumberFormatException() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/user/{id}", "error")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
     @Test
-    void user_delete_ShouldDeleteUserWhenUserExist() throws Exception {
+    void user_delete_ShouldDeleteUser_WhenUserExist() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/user/{id}", "1")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken))
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
     @Test
-    void user_delete_ShouldReturnNotFoundWhenUserNotExist() throws Exception {
+    void user_delete_ShouldReturnNotFound_WhenUserNotExist() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/user/{id}", "3")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
     @Test
-    void user_delete_ShouldReturnBadRequestWhenNumberFormatException() throws Exception {
+    void user_delete_ShouldReturnBadRequest_WhenNumberFormatException() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/user/{id}", "error")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
     @Test
-    void user_delete_ShouldReturnUnauthorizedWhenUserNotMatching() throws Exception {
+    void user_delete_ShouldReturnUnauthorized_WhenUserNotMatching() throws Exception {
         // GIVEN : Créer un utilisateur dans la base de données, qui est différent de celui authentifié
         User user = new User();
         user.setEmail("daryl@mail.com");

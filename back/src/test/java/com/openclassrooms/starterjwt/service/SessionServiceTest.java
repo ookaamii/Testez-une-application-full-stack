@@ -42,7 +42,7 @@ public class SessionServiceTest {
     }
 
     @Test
-    public void session_createSession() {
+    public void session_create_ShouldSaveSession() {
         // GIVEN : Initialiser les objets nécessaires au test
         Session session = new Session();
         session.setName("Pilate");
@@ -64,7 +64,7 @@ public class SessionServiceTest {
     }
 
     @Test
-    public void session_deleteSession() {
+    public void session_delete_ShouldDeleteSession() {
         // GIVEN : un ID de session pour la suppression
         Long sessionId = 1L;
 
@@ -76,7 +76,7 @@ public class SessionServiceTest {
     }
 
     @Test
-    public void session_findAllSession() {
+    public void session_findAll_ShouldReturnListSessions_WhenSessionsExist() {
         // GIVEN : Préparer une liste de sessions simulée
         Session session1 = new Session();
         session1.setName("Pilate");
@@ -137,7 +137,7 @@ public class SessionServiceTest {
     }
 
     @Test
-    public void session_updateSession() {
+    public void session_update_ShouldUpdateSession() {
         // GIVEN : Simuler une session 1, avec des données à mettre à jour
         Long sessionId = 1L;
 
@@ -163,7 +163,7 @@ public class SessionServiceTest {
     }
 
     @Test
-    public void session_participate_ShouldSaveSession_WhenUserAndSessionNotNullAndNotAlreadyParticipate() {
+    public void session_participate_ShouldSaveUserInSession_WhenUserAndSessionNotNullAndNotAlreadyParticipate() {
         // GIVEN : Simuler une session et un utilisateur qui existent, où l'user ne participe pas encore
         Long sessionId = 1L;
         Long userId = 1L;
@@ -176,8 +176,8 @@ public class SessionServiceTest {
 
         User user = new User();
         user.setId(userId);
-        user.setFirstName("Jean");
-        user.setLastName("Neige");
+        user.setFirstName("Daryl");
+        user.setLastName("Dixon");
 
         // Simuler la récupération de la session et de l'utilisateur
         given(sessionRepository.findById(sessionId)).willReturn(Optional.of(session));
@@ -247,7 +247,7 @@ public class SessionServiceTest {
     }
 
     @Test
-    public void session_noLongerParticipate_ShouldSaveUserInSession_WhenUserNotAlreadyParticipate() {
+    public void session_noLongerParticipate_ShouldDeleteUserOfSession_WhenUserParticipate() {
         // GIVEN
         Long sessionId = 1L;
         Long userId = 1L;

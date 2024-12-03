@@ -64,7 +64,7 @@ public class SessionControllerIT {
     }
 
     @Test
-    public void session_findAll() throws Exception {
+    public void session_findAll_ShouldReturnListSessions_WhenSessionsExist() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/session")
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -72,7 +72,7 @@ public class SessionControllerIT {
     }
 
     @Test
-    public void session_findById_ShouldReturnSessionWhenSessionExist() throws Exception {
+    public void session_findById_ShouldReturnSession_WhenSessionExist() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/session/{id}", "1")
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -81,14 +81,14 @@ public class SessionControllerIT {
     }
 
     @Test
-    public void session_findById_ShouldReturnNotFoundWhenSessionDoesNotExist() throws Exception {
+    public void session_findById_ShouldReturnNotFound_WhenSessionDoesNotExist() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/session/{id}", "3")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
     @Test
-    public void session_findById_ShouldReturnBadRequestWhenNumberFormatException() throws Exception {
+    public void session_findById_ShouldReturnBadRequest_WhenNumberFormatException() throws Exception {
         mockMvc
                 .perform(MockMvcRequestBuilders.get("/api/session/{id}", "error")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken))
@@ -96,8 +96,8 @@ public class SessionControllerIT {
     }
 
     @Test
-    public void session_create() throws Exception {
-        // Créer un utilisateur pour les tests
+    public void session_create_ShouldSaveSession() throws Exception {
+        // Initialiser une session
         SessionDto testSessionDto = new SessionDto();
         testSessionDto.setId(2L);
         testSessionDto.setName("Pilate");
@@ -108,6 +108,7 @@ public class SessionControllerIT {
         // Convertir les données en JSON
         String sessionDtoJson = new ObjectMapper().writeValueAsString(testSessionDto);
 
+        // Vérifier les données attendues
         mockMvc.perform(MockMvcRequestBuilders.post("/api/session")
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -120,8 +121,8 @@ public class SessionControllerIT {
     }
 
     @Test
-    public void session_update_ShouldReturnSessionWhenSessionExist() throws Exception {
-        // Créer un utilisateur pour les tests
+    public void session_update_ShouldReturnSession_WhenSessionExist() throws Exception {
+        // Initialiser une session modifiée
         SessionDto testSessionDto = new SessionDto();
         testSessionDto.setName("Pilate modif");
         testSessionDto.setDescription("Cours de 1h de pilate");
@@ -131,6 +132,7 @@ public class SessionControllerIT {
         // Convertir les données en JSON
         String sessionDtoJson = new ObjectMapper().writeValueAsString(testSessionDto);
 
+        // Vérifier les données attendues
         mockMvc.perform(MockMvcRequestBuilders.put("/api/session/{id}", "1")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -142,8 +144,8 @@ public class SessionControllerIT {
     }
 
     @Test
-    public void session_update_ShouldReturnBadRequestWhenNumberFormatException() throws Exception {
-        // Créer un utilisateur pour les tests
+    public void session_update_ShouldReturnBadRequest_WhenNumberFormatException() throws Exception {
+        // Initialiser une session modifiée
         SessionDto testSessionDto = new SessionDto();
         testSessionDto.setName("Pilate modif");
         testSessionDto.setDescription("Cours de 1h de pilate");
@@ -153,6 +155,7 @@ public class SessionControllerIT {
         // Convertir les données en JSON
         String sessionDtoJson = new ObjectMapper().writeValueAsString(testSessionDto);
 
+        // Vérifier les données attendues
         mockMvc.perform(MockMvcRequestBuilders.put("/api/session/{id}", "error")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -161,56 +164,56 @@ public class SessionControllerIT {
     }
 
     @Test
-    public void session_delete_ShouldDeleteSessionWhenSessionExist() throws Exception {
+    public void session_delete_ShouldDeleteSession_WhenSessionExist() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/session/{id}", "1")
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken))
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
     @Test
-    public void session_delete_ShouldReturnNotFoundWhenSessionDoesNotExist() throws Exception {
+    public void session_delete_ShouldReturnNotFound_WhenSessionDoesNotExist() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/session/{id}", "2")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
     @Test
-    public void session_delete_ShouldReturnBadRequestWhenNumberFormatException() throws Exception {
+    public void session_delete_ShouldReturnBadRequest_WhenNumberFormatException() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/session/{id}", "error")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
     @Test
-    public void session_participate_ShouldAddUserToSessionWhenSessionAndUserExist() throws Exception {
+    public void session_participate_ShouldAddUserToSession_WhenSessionAndUserExist() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/api/session/{id}/participate/{userId}", "1", "1")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken))
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
     @Test
-    public void session_participate_ShouldReturnBadRequestWhenNumberFormatException() throws Exception {
+    public void session_participate_ShouldReturnBadRequest_WhenNumberFormatException() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/api/session/{id}/participate/{userId}", "1", "error")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
     @Test
-    public void session_participate_ShouldReturnNotFoundWhenSessionDoesNotExist() throws Exception {
+    public void session_participate_ShouldReturnNotFound_WhenSessionDoesNotExist() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/api/session/{id}/participate/{userId}", "2", "1")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
     @Test
-    public void session_participate_ShouldReturnNotFoundWhenUserDoesNotExist() throws Exception {
+    public void session_participate_ShouldReturnNotFound_WhenUserDoesNotExist() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/api/session/{id}/participate/{userId}", "1", "5")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
     @Test
-    public void session_participate_ShouldReturnBadRequestWhenUserAlreadyParticipates() throws Exception {
+    public void session_participate_ShouldReturnBadRequest_WhenUserAlreadyParticipates() throws Exception {
         // Préparer une session avec un utilisateur existant
         User user = userRepository.findById(1L).orElseThrow(() -> new RuntimeException("User not found"));
         Session session = sessionRepository.findById(1L).orElseThrow(() -> new RuntimeException("Session not found"));
@@ -225,7 +228,7 @@ public class SessionControllerIT {
     }
 
     @Test
-    public void session_noLongerParticipate_ShouldDeleteUserInSessionWhenSessionExistAndUserParticipate() throws Exception {
+    public void session_noLongerParticipate_ShouldDeleteUserInSession_WhenSessionExistAndUserParticipate() throws Exception {
         // Préparer une session avec un utilisateur existant
         User user = userRepository.findById(1L).orElseThrow(() -> new RuntimeException("User not found"));
         Session session = sessionRepository.findById(1L).orElseThrow(() -> new RuntimeException("Session not found"));
@@ -240,21 +243,21 @@ public class SessionControllerIT {
     }
 
     @Test
-    public void session_noLongerParticipate_ShouldReturnNotFoundWhenSessionDoesNotExist() throws Exception {
+    public void session_noLongerParticipate_ShouldReturnNotFound_WhenSessionDoesNotExist() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/session/{id}/participate/{userId}", "5", "1")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
     @Test
-    public void session_noLongerParticipate_ShouldReturnBadRequestWhenNumberFormatException() throws Exception {
+    public void session_noLongerParticipate_ShouldReturnBadRequest_WhenNumberFormatException() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/session/{id}/participate/{userId}", "1", "error")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
     @Test
-    public void session_noLongerParticipate_ShouldReturnBadRequestWhenSessionExistAndUserNotParticipate() throws Exception {
+    public void session_noLongerParticipate_ShouldReturnBadRequest_WhenSessionExistAndUserNotParticipate() throws Exception {
         // Préparer une session
         Session session = sessionRepository.findById(1L).orElseThrow(() -> new RuntimeException("Session not found"));
 

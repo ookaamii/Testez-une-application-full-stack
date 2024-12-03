@@ -33,7 +33,7 @@ public class TeacherServiceTest {
     }
 
     @Test
-    public void teacher_createTeacher() {
+    public void teacher_findAll_ShouldReturnListTeachers_WhenTeachersExist() {
         // GIVEN : Initialiser une liste de professeurs
         Teacher teacher1 = new Teacher();
         teacher1.setLastName("Dixon");
@@ -57,7 +57,7 @@ public class TeacherServiceTest {
     }
 
     @Test
-    public void teacher_FindByIdTeacher() {
+    public void teacher_findById_ShouldReturnTeacher_WhenTeacherExist() {
         // GIVEN : Initialiser un professeur
         Long teacherId = 1L;
         Teacher expectedTeacher = new Teacher();

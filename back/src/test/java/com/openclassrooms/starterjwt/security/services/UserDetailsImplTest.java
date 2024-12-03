@@ -6,34 +6,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 public class UserDetailsImplTest {
-
-   /* @Test
-    public void userDetailsImpl_ShouldReturnCorrectAttributes() {
-        // GIVEN : Initialisation de UserDetailsImpl
-        UserDetailsImpl userDetails = UserDetailsImpl.builder()
-                .id(1L)
-                .username("testUser")
-                .firstName("John")
-                .lastName("Doe")
-                .admin(true)
-                .password("password123")
-                .build();
-
-        // THEN : Vérifier les attributs
-        assertThat(userDetails.getId()).isEqualTo(1L);
-        assertThat(userDetails.getUsername()).isEqualTo("testUser");
-        assertThat(userDetails.getFirstName()).isEqualTo("John");
-        assertThat(userDetails.getLastName()).isEqualTo("Doe");
-        assertThat(userDetails.getPassword()).isEqualTo("password123");
-        assertThat(userDetails.getAdmin()).isTrue();
-    }*/
 
     @Test
     public void userDetailsImpl_getAuthorities_ShouldReturnEmptyAuthorities() {
@@ -49,7 +26,7 @@ public class UserDetailsImplTest {
     }
 
     @Test
-    public void userDetailsImpl_isAccountNonExpired_ShouldReturnTrueWhenAccountNonExpired() {
+    public void userDetailsImpl_isAccountNonExpired_ShouldReturnTrue_WhenAccountNonExpired() {
         // GIVEN : Initialiser UserDetailsImpl
         UserDetailsImpl userDetails = UserDetailsImpl.builder().build();
 
@@ -58,7 +35,7 @@ public class UserDetailsImplTest {
     }
 
     @Test
-    public void userDetailsImpl_isAccountNonLocked_ShouldReturnTrueWhenAccountNonLocked() {
+    public void userDetailsImpl_isAccountNonLocked_ShouldReturnTrue_WhenAccountNonLocked() {
         // GIVEN : Initialiser UserDetailsImpl
         UserDetailsImpl userDetails = UserDetailsImpl.builder().build();
 
@@ -67,7 +44,7 @@ public class UserDetailsImplTest {
     }
 
     @Test
-    public void userDetailsImpl_isCredentialsNonExpired_ShouldReturnTrueWhenCredentialsNonExpired() {
+    public void userDetailsImpl_isCredentialsNonExpired_ShouldReturnTrue_WhenCredentialsNonExpired() {
         // GIVEN : Initialiser UserDetailsImpl
         UserDetailsImpl userDetails = UserDetailsImpl.builder().build();
 
@@ -76,7 +53,7 @@ public class UserDetailsImplTest {
     }
 
     @Test
-    public void userDetailsImpl_isEnabled_ShouldReturnTrueWhenIsEnabled() {
+    public void userDetailsImpl_isEnabled_ShouldReturnTrue_WhenIsEnabled() {
         // GIVEN : Initialiser UserDetailsImpl
         UserDetailsImpl userDetails = UserDetailsImpl.builder().build();
 
@@ -85,10 +62,10 @@ public class UserDetailsImplTest {
     }
 
     @Test
-    public void userDetailsImpl_equals_ShouldReturnTrueWhenThisEqualsObject() {
+    public void userDetailsImpl_equals_ShouldReturnTrue_WhenThisEqualsObject() {
         // GIVEN : Créer une instance de UserDetailsImpl
         Long userId = 1L;
-        String username = "walkingdead";
+        String username = "daryl@mail.com";
         String firstName = "Daryl";
         String lastName = "Dixon";
         Boolean admin = true;
@@ -104,10 +81,10 @@ public class UserDetailsImplTest {
     }
 
     @Test
-    public void userDetailsImpl_equals_ShouldReturnFalseWhenObjectIsNullOrNotSameClass() {
+    public void userDetailsImpl_equals_ShouldReturnFalse_WhenObjectIsNullOrNotSameClass() {
         // GIVEN
         Long userId = 1L;
-        String username = "walkingdead";
+        String username = "daryl@mail.com";
         String firstName = "Daryl";
         String lastName = "Dixon";
         Boolean admin = true;
@@ -128,10 +105,10 @@ public class UserDetailsImplTest {
     }
 
     @Test
-    public void userDetailsImpl_equals_ShouldReturnTrueWhenThisEqualsObjectWithId() {
+    public void userDetailsImpl_equals_ShouldReturnTrue_WhenThisEqualsObjectWithId() {
         // GIVEN : Créer une instance de UserDetailsImpl
         Long userId = 1L;
-        String username = "walkingdead";
+        String username = "daryl@mail.com";
         String firstName = "Daryl";
         String lastName = "Dixon";
         Boolean admin = true;

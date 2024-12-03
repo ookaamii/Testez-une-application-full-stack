@@ -50,7 +50,7 @@ public class UserDetailsServiceImplTest {
     }
 
     @Test
-    public void UserDetailsServiceImpl_loadUserByUsername_ShouldUsernameNotFoundExceptionWhereUserNotFound() {
+    public void UserDetailsServiceImpl_loadUserByUsername_ShouldUsernameNotFoundException_WhereUserNotFound() {
         // GIVEN : Initialiser un mail d'un utilisateur qui n'existe pas
         String email = "daryl@mail.com";
 

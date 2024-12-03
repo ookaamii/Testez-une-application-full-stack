@@ -31,7 +31,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void user_delete_ShouldDeleteUser() {
+    public void user_delete_ShouldDeleteUser_WhenUserExist() {
         // GIVEN : Initialiser un userid
         Long userId = 1L;
 
@@ -43,7 +43,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void user_findById_ShouldReturnUserByIdWhenUserExist() {
+    public void user_findById_ShouldReturnUserById_WhenUserExist() {
         // GIVEN : Initialiser un userid
         Long userid = 1L;
         User user = new User();
@@ -54,7 +54,7 @@ public class UserServiceTest {
 
         given(userRepository.findById(userid)).willReturn(Optional.of(user));
 
-        // WHEN
+        // WHEN : Simuler l'appel dans le service
         classUnderTest.findById(userid);
 
         // THEN : Vérifier que la méthode findById a été appelée et que le contenu est correct
@@ -67,7 +67,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void user_findById_ShouldReturnNullWhenUserDoesNotExist() {
+    public void user_findById_ShouldReturnNull_WhenUserDoesNotExist() {
         // GIVEN : Initialiser un userid
         Long userid = 2L;
 

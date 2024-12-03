@@ -1,8 +1,6 @@
 package com.openclassrooms.starterjwt.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.openclassrooms.starterjwt.dto.UserDto;
-import com.openclassrooms.starterjwt.models.User;
 import com.openclassrooms.starterjwt.payload.request.LoginRequest;
 import com.openclassrooms.starterjwt.payload.request.SignupRequest;
 import com.openclassrooms.starterjwt.repository.UserRepository;
@@ -13,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -55,7 +52,7 @@ public class AuthControllerIT {
     }
 
     @Test
-    public void auth_authenticateUser_ShouldReturnUserWhenUserIsOkAndAdmin() throws Exception {
+    public void auth_authenticateUser_ShouldReturnUser_WhenUserIsOkAndAdmin() throws Exception {
         // GIVEN : Créer un utilisateur et un JWT
         String username = "yoga@studio.com";
         String firstName = "Admin";
@@ -84,7 +81,7 @@ public class AuthControllerIT {
     }
 
     @Test
-    public void auth_authenticateUser_ShouldReturnUnauthorizedWhenUserNotFound() throws Exception {
+    public void auth_authenticateUser_ShouldReturnUnauthorized_WhenUserNotFound() throws Exception {
         // GIVEN : Créer un LoginRequest avec un utilisateur qui n'existe pas
         LoginRequest loginRequest = new LoginRequest();
         loginRequest.setEmail("nonexistent@studio.com");
@@ -100,7 +97,7 @@ public class AuthControllerIT {
     }
 
     @Test
-    public void auth_registerUser_ShouldReturnSuccesMessageWhenSignupRequest() throws Exception {
+    public void auth_registerUser_ShouldReturnSuccesMessage_WhenSignupRequest() throws Exception {
         // GIVEN : Créer un signUpRequest
         SignupRequest signUpRequest = new SignupRequest();
         signUpRequest.setEmail("daryl@mail.com");
@@ -118,8 +115,8 @@ public class AuthControllerIT {
     }
 
     @Test
-    public void auth_registerUser_ShouldReturnBadRequestAndErrorMessageWhenEmailAlreadyExist() throws Exception {
-        // GIVEN : Créer un utilisateur dans la base de données avec un mail déjà utilisé
+    public void auth_registerUser_ShouldReturnBadRequestAndErrorMessage_WhenEmailAlreadyExist() throws Exception {
+        // GIVEN : Initialiser un utilisateur avec un mail déjà utilisé
         SignupRequest signUpRequest = new SignupRequest();
         signUpRequest.setEmail("yoga@studio.com");
         signUpRequest.setFirstName("Daryl");

@@ -14,7 +14,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,7 +46,7 @@ public class TeacherControllerIT {
 
 
     @Test
-    public void teacher_findAll() throws Exception {
+    public void teacher_findAll_ShouldReturnListTeachers_WhenTeachersExist() throws Exception {
         mockMvc
                 .perform(MockMvcRequestBuilders.get("/api/teacher")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken))
@@ -55,7 +54,7 @@ public class TeacherControllerIT {
     }
 
     @Test
-    public void teacher_findById_ShouldReturnOKWhenTeacherExist() throws Exception {
+    public void teacher_findById_ShouldReturnOk_WhenTeacherExist() throws Exception {
         mockMvc
                 .perform(MockMvcRequestBuilders.get("/api/teacher/{id}", "1")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken))
@@ -63,7 +62,7 @@ public class TeacherControllerIT {
     }
 
     @Test
-    public void teacher_findById_ShouldReturnNotFoundWhenTeacherDoesNotExist() throws Exception {
+    public void teacher_findById_ShouldReturnNotFound_WhenTeacherDoesNotExist() throws Exception {
         mockMvc
                 .perform(MockMvcRequestBuilders.get("/api/teacher/{id}", "4")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken))
@@ -71,7 +70,7 @@ public class TeacherControllerIT {
     }
 
     @Test
-    public void teacher_findById_ShouldReturnBadRequestWhenNumberFormatException() throws Exception {
+    public void teacher_findById_ShouldReturnBadRequest_WhenNumberFormatException() throws Exception {
         mockMvc
                 .perform(MockMvcRequestBuilders.get("/api/teacher/{id}", "error")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken))
