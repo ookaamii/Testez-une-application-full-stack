@@ -8,14 +8,19 @@ import { TeacherService } from './teacher.service';
 describe('TeacherService', () => {
   let service: TeacherService;
   let httpMock: HttpTestingController;
-  let pathService: 'api/teacher/';
-  let id: '1';
+  const pathService = 'api/teacher/';
+  const id = '1';
+  const mockTeacher: Teacher = {
+    id: 1,
+    lastName: 'Dixon',
+    firstName: 'Daryl',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports:[
-        HttpClientTestingModule
-      ]
+      imports: [HttpClientTestingModule],
     });
     service = TestBed.inject(TeacherService);
     httpMock = TestBed.inject(HttpTestingController);
@@ -26,25 +31,17 @@ describe('TeacherService', () => {
   });
 
   test('doit retourner un professeur par son id', (done) => {
-    const mockTeacher: Teacher = {
-          id: 1,
-          lastName: 'Dixon',
-          firstName: 'Daryl',
-          createdAt: new Date(),
-          updatedAt: new Date()
-        };
+    // Appel du service
+    service.detail('1').subscribe((teacher) => {
+      expect(teacher).toEqual(mockTeacher); // Vérifie que la réponse est correcte
+      done();
+    });
 
-        // Appel du service
-        service.detail('1').subscribe((teacher) => {
-          expect(teacher).toEqual(mockTeacher); // Vérifie que la réponse est correcte
-          done();
-        });
+    // Vérifie l'URL et la méthode de la requête
+    const req = httpMock.expectOne(pathService + id);
+    expect(req.request.method).toBe('GET');
 
-        // Vérifie l'URL et la méthode de la requête
-        const req = httpMock.expectOne(pathService + id);
-        expect(req.request.method).toBe('GET');
-
-        // Simule une réponse HTTP avec les données
-        req.flush(mockTeacher);
+    // Simule une réponse HTTP avec les données
+    req.flush(mockTeacher);
   });
 });
