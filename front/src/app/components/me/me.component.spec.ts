@@ -1,6 +1,6 @@
 import { HttpClientModule } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { of, throwError } from 'rxjs';
+import { of } from 'rxjs';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -20,30 +20,23 @@ describe('MeComponent', () => {
   let matSnackBarMock: any;
 
   const mockSessionService = {
-    sessionInformation: {
-      admin: true,
-      id: 1,
-    },
+    sessionInformation: { admin: true, id: 1 },
     logOut: jest.fn(),
   };
 
   beforeEach(async () => {
-    // Mock des services
+    // Mock des services pour les tests
     userServiceMock = {
       getById: jest.fn(() =>
-        of({ id: 1, firstName: 'Admin', email: 'yoga@studio.com' }) // Retourne un observable
+        of({ id: 1, firstName: 'Admin', email: 'yoga@studio.com' })
       ),
       delete: jest.fn(),
     };
 
-    routerMock = {
-      navigate: jest.fn(),
-    };
+    routerMock = { navigate: jest.fn() };
+    matSnackBarMock = { open: jest.fn() };
 
-    matSnackBarMock = {
-      open: jest.fn(),
-    };
-
+    // Configuration du TestBed
     await TestBed.configureTestingModule({
       declarations: [MeComponent],
       imports: [
@@ -70,40 +63,51 @@ describe('MeComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  test("doit charger l'utilisateur avec l'ID depuis le service", () => {
-    // Mock de la réponse pour getById
+  test('should load user data when initialized', () => {
     const mockUser = { id: 1, firstName: 'Admin', email: 'yoga@studio.com' };
     userServiceMock.getById.mockReturnValue(of(mockUser));
 
-    component.ngOnInit(); // Appelle ngOnInit pour simuler le chargement
+    component.ngOnInit(); // Appel de ngOnInit pour charger l'utilisateur
 
-    expect(userServiceMock.getById).toHaveBeenCalledWith('1'); // Vérifie que getById est appelé avec l'ID
-    expect(component.user).toEqual(mockUser); // Vérifie que l'utilisateur est bien chargé
+    // Vérifie que le service getById a été appelé avec l'ID '1'
+    expect(userServiceMock.getById).toHaveBeenCalledWith('1');
+    // Vérifie que l'utilisateur chargé est égal à mockUser
+    expect(component.user).toEqual(mockUser);
   });
 
-  // Vérifie le comportement du bouton retour
-  test('doit appeler window.history.back pour revenir en arrière', () => {
-    const backSpy = jest.spyOn(window.history, 'back').mockImplementation(); // Espionne window.history.back
+  // Test du bouton retour
+  test('should navigate back on back button click', () => {
+    const backSpy = jest.spyOn(window.history, 'back').mockImplementation(); // Espionner l'appel de history.back
 
-    component.back(); // Appelle la méthode back
+    component.back(); // Appel de la méthode back pour revenir en arrière
 
-    expect(backSpy).toHaveBeenCalled(); // Vérifie que window.history.back a été appelé
+    expect(backSpy).toHaveBeenCalled(); // Vérifie que back a bien été appelé
 
     backSpy.mockRestore(); // Restaure le comportement original de back
   });
 
-  test('doit supprimer un utilisateur et retourner un message', () => {
-    userServiceMock.delete.mockReturnValue(of(void 0));
+  // Test de suppression d'un utilisateur
+  test('should delete user and show success message', () => {
+    userServiceMock.delete.mockReturnValue(of(void 0)); // Mock la réponse de suppression de l'utilisateur
 
-    component.delete();
+    component.delete(); // Appel de la méthode delete
 
+    // Vérifie que la méthode delete a été appelée avec l'ID '1'
     expect(userServiceMock.delete).toHaveBeenCalledWith('1');
+    // Vérifie que MatSnackBar a bien affiché un message de succès
     expect(matSnackBarMock.open).toHaveBeenCalledWith(
       'Your account has been deleted !',
       'Close',
       { duration: 3000 }
     );
+    // Vérifie que la méthode logOut du service sessionService a été appelée
     expect(mockSessionService.logOut).toHaveBeenCalled();
+    // Vérifie que la redirection a bien eu lieu
     expect(routerMock.navigate).toHaveBeenCalledWith(['/']);
+  });
+
+  afterEach(() => {
+    // Restaure les espions après chaque test
+    jest.restoreAllMocks();
   });
 });

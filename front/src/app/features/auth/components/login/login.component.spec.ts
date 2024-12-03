@@ -13,7 +13,6 @@ import { expect } from '@jest/globals';
 import { SessionService } from 'src/app/services/session.service';
 import { AuthService } from 'src/app/features/auth/services/auth.service';
 import { SessionInformation } from 'src/app/interfaces/sessionInformation.interface';
-
 import { LoginComponent } from './login.component';
 
 describe('LoginComponent', () => {
@@ -23,8 +22,19 @@ describe('LoginComponent', () => {
   let sessionServiceMock: any;
   let routerMock: any;
 
+  // Mock de la session utilisateur
+  const mockSessionInfo: SessionInformation = {
+    id: 1,
+    username: 'yoga@studio.com',
+    token: '123',
+    firstName: 'Admin',
+    lastName: 'Admin',
+    type: 'test',
+    admin: true,
+  };
+
   beforeEach(async () => {
-    // Mock des services
+    // Mock des services nécessaires pour les tests
     authServiceMock = {
       login: jest.fn(),
     };
@@ -35,6 +45,7 @@ describe('LoginComponent', () => {
       navigate: jest.fn(),
     };
 
+    // Configuration du TestBed
     await TestBed.configureTestingModule({
       declarations: [LoginComponent],
       providers: [
@@ -54,64 +65,59 @@ describe('LoginComponent', () => {
       ],
     }).compileComponents();
 
+    // Création du composant
     fixture = TestBed.createComponent(LoginComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
+  // Test de création du composant
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
+  // Test pour vérifier l'envoi des données de connexion et la redirection en cas de succès
   test('doit envoyer les données de connexion et rediriger en cas de succès', () => {
-    // Données de simulation
+    // Données de simulation pour la connexion
     const mockLoginRequest = { email: 'yoga@studio.com', password: 'test!1234' };
-    const mockSessionInfo: SessionInformation = {
-      id: 1,
-      username: 'yoga@studio.com',
-      token: '123',
-      firstName: 'Admin',
-      lastName: 'Admin',
-      type: 'test',
-      admin: true,
-    };
 
-    // Configure le mock du service d'authentification
+    // Mock du service d'authentification pour renvoyer une session valide
     authServiceMock.login.mockReturnValue(of(mockSessionInfo));
 
-    // Remplit le formulaire
+    // Remplissage du formulaire avec les données simulées
     component.form.setValue(mockLoginRequest);
 
-    // Appelle la méthode submit
+    // Soumission du formulaire
     component.submit();
 
-    // Vérifie que le service a été appelé avec les bonnes données
+    // Vérifie que le service login a été appelé avec les bonnes données
     expect(authServiceMock.login).toHaveBeenCalledWith(mockLoginRequest);
 
-    // Vérifie que sessionService.logIn a été appelé avec la réponse
+    // Vérifie que sessionService.logIn a été appelé avec les informations de session retournées
     expect(sessionServiceMock.logIn).toHaveBeenCalledWith(mockSessionInfo);
 
-    // Vérifie que la redirection a été effectuée
+    // Vérifie que la redirection a bien eu lieu
     expect(routerMock.navigate).toHaveBeenCalledWith(['/sessions']);
   });
 
+  // Test pour vérifier l'affichage de l'erreur en cas d'échec de connexion
   test('doit afficher une erreur en cas d’échec de connexion', () => {
-    // Données de simulation
+    // Données de simulation pour une connexion incorrecte
     const mockLoginRequest = { email: 'test@test.com', password: 'wrongPassword' };
 
-    // Configure le mock du service d'authentification pour renvoyer une erreur
+    // Mock du service d'authentification pour renvoyer une erreur
     authServiceMock.login.mockReturnValue(throwError(() => new Error('Login failed')));
 
-    // Remplit le formulaire
+    // Remplissage du formulaire avec des données incorrectes
     component.form.setValue(mockLoginRequest);
 
-    // Appelle la méthode submit
+    // Soumission du formulaire
     component.submit();
 
-    // Vérifie que le service a été appelé
+    // Vérifie que le service login a bien été appelé avec les mauvaises données
     expect(authServiceMock.login).toHaveBeenCalledWith(mockLoginRequest);
 
-    // Vérifie que la variable onError a été mise à jour
+    // Vérifie que la variable onError a été mise à jour pour signaler une erreur
     expect(component.onError).toBe(true);
 
     // Vérifie que la redirection n'a pas été effectuée

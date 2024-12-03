@@ -46,7 +46,7 @@ describe('SessionsService', () => {
     req.flush(null);
   });
 
-test('doit afficher les details d\'une session', () => {
+  test('doit afficher les détails d\'une session', () => {
     // Appel du service
     service.detail(id).subscribe((response) => {
       expect(response).toEqual(mockSession); // Vérifie que la réponse correspond
