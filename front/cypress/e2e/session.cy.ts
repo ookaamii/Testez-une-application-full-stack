@@ -53,7 +53,7 @@ describe('Session spec', () => {
 
     // Intercepter la requête POST pour la création
     cy.fixture('sessions.json').then((sessions) => {
-      cy.intercept('POST', '/api/session/2', {
+      cy.intercept('POST', '/api/session', {
         body: sessions[1], // Utilise les données du fichier JSON
       }).as('createSession');
     });
