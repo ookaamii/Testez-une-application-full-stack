@@ -82,7 +82,7 @@ describe('Me spec', () => {
     // Vérifier que le snackbar de succès s'affiche
     cy.get('.mat-snack-bar-container')
       .should('be.visible')
-      .and('contain', 'Your account has been deleted!');
+      .and('contain', 'Your account has been deleted !');
 
     // Vérification : Redirection vers la page d'accueil
     cy.url().should('include', '/');
